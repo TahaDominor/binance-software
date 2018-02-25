@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,400,700|Oswald:200,300,400,500,600,700|Playfair+Display:400,700,900');
+
+html,body{
+	margin: 0;
+	padding: 0;
+	background-color: #151A1E;
+	color:white;
+}
+#head{
+	background-color: #262D33;
+	padding: 15px;	
+	font-size: 20px;
+	font-family: 'Oswald';
+	letter-spacing: 2px;
+	text-align: center;	
+	color: #F3BA2F;
+}
+#pair{
+	padding: 15px;	
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	border-radius: 	5px;
+	color: white;
+	display: inline-block;	
+	width: 200px;
+	margin-top: 20px;
+	vertical-align: top;	
+}
+#info{
+	display: inline-block;
+	padding: 15px;
+	vertical-align: top;	
+	margin-left: 40px;
+	margin-top: 20px;
+}
+.wrap{
+	padding-left: 40px;
+	padding-right: 40px;	
+}
+.wing{
+	display: inline-block;	
+	margin: 0;
+	width: 50%;
+}
+.wing>h2{
+	font-family: 'Oswald';
+	font-size: 18px;
+	border-bottom: 	1px solid #F3BA2F;
+	color: #F3BA2F;
+	font-weight: 400;
+	letter-spacing: 1px;
+	width: 70%;
+	text-align: left;
+}
+.wing>button{
+	display: inline-block;	
+	padding: 12px;
+	border: 4px;
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	color: white;
+	width: 40%;
+	margin-top: 20px;
+	-webkit-transition: 	400ms all;
+	-o-transition: 	400ms all;
+	transition: 	400ms all;
+	cursor: pointer;
+
+}
+.wing>input{
+	padding: 15px;	
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	border-radius: 	5px;
+	color: white;
+	display: block;
+	width: 50%;
+	margin-top: 20px;	
+}
+.wing>button:hover{
+	background-color: #313A42;
+}
+#main{
+	margin-top: 10px;
+	clear:both;
+}
+#authbox{
+	margin-top: 50px;
+}
+#authbox>input{
+	padding: 15px;	
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	border-radius: 	5px;
+	color: white;
+	display: block;
+	width: 70%;
+	margin-top: 20px;
+	-webkit-transition: 400ms all;
+	-o-transition: 400ms all;
+	transition: 400ms all;
+	margin: 15px auto;
+}
+#authbox>input:hover,#authbox>button:hover{
+	background-color: #313A42;
+}
+#authbox>button{
+	display: block;	
+	padding: 12px;
+	border: 4px;
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	color: white;
+	width: 50%;
+	margin-top: 20px;
+	-webkit-transition: 	400ms all;
+	-o-transition: 	400ms all;
+	transition: 	400ms all;
+	cursor: pointer;
+	margin: 0 auto;
+}
+.percents{
+	margin-top: 10px;
+}
+#orderbox{
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 15px;
+}
+#thead,#bhead{
+	background-color: #262D33;
+	
+}
+#thead>th,#bhead>th{
+	color: #F3BA2F;
+	font-family: 'Oswald';
+	font-weight: 100;
+}
+td{
+	text-align: center;
+	font-family: 'Lato';
+	font-weight: 100;
+}
+#balancesButton{
+	display: inline-block;	
+	padding: 12px;
+	border: 4px;
+	background-color: #262D33;
+	border: 0;
+	outline: 0;
+	color: white;
+	width: 150px;
+	margin-top: 20px;
+	-webkit-transition: 	400ms all;
+	-o-transition: 	400ms all;
+	transition: 	400ms all;
+	cursor: pointer;
+	margin: 0 auto;
+	float: right;
+	margin-top: 50px;
+	margin-right: 50px;	
+}
+#balancesTable{
+	width: 100%;
+}

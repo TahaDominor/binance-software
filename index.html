@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Binance Software</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id="head">BINANCE SOFTWARE</div>
+    <div class="wrap">
+    <div id="authbox">
+      <input type="text" id="apikey" placeholder="API Key">
+      <input type="text" id="apisecret" placeholder="API Secret">
+      <button id="authsub">Submit</button>
+    </div>
+    <div id="balancesBox" style="display: none">
+      <table id='balancesTable'>
+        <tr id="bhead">
+          <th>Coin</th>
+          <th>Available</th>
+          <th>On Order</th>
+          <th><button id='closeBalances' onclick='closeBalance()'>Return</button></th>
+        </tr>
+      </table>
+    </div>
+    <div id="container" style="display: none">
+    <select name="pair" id="pair">
+      
+    </select>
+    <div id="info">
+      Price : 
+      <span id="price">N/A</span>
+    </div>
+    <button id='balancesButton'>Balances</button>
+    <div id="main"> 
+    <div id="buy" class='wing'>
+      <h2>BUY</h2>
+      <div id=".balance"><span id="bcoin">COIN</span> balance : <span id="bbalance">0</span></div>
+      <input type="number" id="bprice" placeholder="Price">
+      <input type="number" id="bcount" placeholder="Amount">
+      <div class="percents">
+        <button class="bpercent" data-value="25">25%</button>
+        <button class="bpercent" data-value="50"">50%</button>
+        <button class="bpercent" data-value="75">75%</button>
+        <button class="bpercent" data-value="90">90%</button>
+        <button class="bpercent" data-value="100">100%</button>
+      </div>
+      <button id="blimit">LIMIT</button>
+      <button id="bmarket">MARKET</button>
+    </div><div id="sell" class='wing'>
+      <h2>SELL</h2>
+      <div class="balance"><span id="scoin">COIN</span> balance : <span id="sbalance">0</span></div>
+      <input type="number" id="sprice" placeholder="Price">
+      <input type="number" id="scount" placeholder="Amount">
+      <div class="percents">
+        <button class="spercent" data-value="25" id="b25">25%</button>
+        <button class="spercent" data-value="50" id="b25">50%</button>
+        <button class="spercent" data-value="75" id="b25">75%</button>
+        <button class="spercent" data-value="90" id="b25">90%</button>
+        <button class="spercent" data-value="100" id="b25">100%</button>
+      </div>
+      <button id="slimit">LIMIT</button>
+      <button id="smarket">MARKET</button>
+    </div>
+    </div>
+    <table id="orderbox">
+      <tr id="thead">
+        <th>Pair</th>
+        <th>Side</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th><button id="cancelAll" style='display:none'>Cancel All</button></th>
+      </tr>
+    </table>
+    </div>
+    </div>
+    
+    <script>
+      // You can also require other files to run in this process
+      require('./renderer.js');
+      const {ipcRenderer} = require('electron');
+
+      var selector = document.getElementById('pair');
+      var priceLabel = document.getElementById('price');
+      var buyPrice = document.getElementById('bprice');
+      var sellPrice = document.getElementById('sprice');
+      var bcount = document.getElementById('bcount');
+      var scount = document.getElementById('scount');
+
+      var apiKey = document.getElementById('apikey');
+      var apiSecret = document.getElementById('apisecret');
+      var apiSubmit = document.getElementById('authsub');
+
+      var authBox = document.getElementById('authbox');
+      var container = document.getElementById('container');
+      var balancesBox = document.getElementById('balancesBox');
+
+      var bcoin = document.getElementById('bcoin');
+      var scoin = document.getElementById('scoin');
+      var bbalance = document.getElementById('bbalance');
+      var sbalance = document.getElementById('sbalance');
+
+      var blimit = document.getElementById('blimit');
+      var bmarket = document.getElementById('bmarket');
+      var slimit = document.getElementById('slimit');
+      var smarket = document.getElementById('smarket');
+
+      var bpercents = document.getElementsByClassName('bpercent');
+      var spercents = document.getElementsByClassName('spercent');
+
+      var balancesButton = document.getElementById('balancesButton');
+      var closeBalances = document.getElementById('closeBalances');
+
+      var buybalance = 0, sellbalance = 0, price= 0;
+
+      document.getElementById('cancelAll').addEventListener('click',function(e){
+        ipcRenderer.send('cancelAll');
+      });
+      balancesButton.addEventListener('click',function(e){
+        ipcRenderer.send('getBalances');
+        balancesBox.style.display = "block";
+        container.style.display = "none";
+      });
+      function closeBalance(){
+        balancesBox.style.display = "none";
+        container.style.display = "block";
+      }
+      function htmlOrder(id,pair,side,qty,price){
+          var html = "<tr data-id='"+id+"' class='orderrow'>";
+          html += "<td>"+pair+"</td>";
+          html += "<td>"+side+"</td>";
+          html += "<td>"+qty+"</td>";
+          html += "<td>"+price+"</td>";
+          html += "<td><button class='cancelbutton' onclick='cancelOrder(\""+pair+"\","+id+")' data-id='"+id+"'>Cancel</button></td>";
+          html += "</tr>";
+          return html;
+      }
+      function htmlBalance(coin, av, order){
+        var html = "<tr>";
+        html += "<td>"+coin+"</td>";
+        html += "<td>"+av+"</td>";
+        html += "<td>"+order+"</td>";
+        html += "<td></td>";
+        html += "</tr>";
+        return html;
+      }
+      function cancelOrder(sym,id){
+          ipcRenderer.send('cancelOrder',[sym,id]);
+      }
+      for(var i = 0; i < bpercents.length; i++){
+        bpercents[i].addEventListener('click', function(e){
+          bcount.value = ((buybalance*(this.dataset.value/100))/buyPrice.value).toFixed(4);
+        });
+      }
+      for(var i = 0; i < spercents.length; i++){
+        spercents[i].addEventListener('click', function(e){
+          scount.value = (this.dataset.value/100 * sellbalance).toFixed(4);;
+        });
+      }
+
+      // Authentication
+      ipcRenderer.on('apicache', (event,data) =>{
+        apiKey.value = data[0];
+        apiSecret.value = data[1];
+      });
+      apiSubmit.addEventListener('click',function(e){
+        var data = [apiKey.value,apiSecret.value];
+        ipcRenderer.send('apiAuth',data);
+      });
+
+      ipcRenderer.on('ticker', (event, data) => {
+        var html = "";
+        for(var pair in data){
+            html += "<option value='"+pair+"'>"+pair+"</option>";
+        }
+        selector.innerHTML = html;
+      });
+      ipcRenderer.on('resTicker', (event, data) => {
+        priceLabel.innerHTML = data;
+        buyPrice.value = data;
+        sellPrice.value = data;
+        price = data;
+      });
+      ipcRenderer.on('auth_error', (event,data) => {
+        alert("Authentication failed !");
+      });
+      ipcRenderer.on('auth_ok', (event,data) => {
+        authBox.style.display = "none";
+        container.style.display = "block";
+      });
+      selector.addEventListener('change',function(e){
+        ipcRenderer.send('reqTicker',selector.value);
+      });
+      ipcRenderer.on('refresh', (event,data) =>{
+        ipcRenderer.send('reqTicker',selector.value);
+      });
+      ipcRenderer.on('balance', (event,data) => {
+        scoin.innerHTML = data[0][0];
+        sbalance.innerHTML = data[0][1];
+        sellbalance = data[0][1];
+        bcoin.innerHTML = data[1][0];
+        bbalance.innerHTML = data[1][1];
+        buybalance = data[1][1];
+      });
+
+      // Ordering Request
+
+      blimit.addEventListener('click',function(e){
+          ipcRenderer.send('buy_limit', [selector.value,bcount.value,buyPrice.value]);
+      });
+      bmarket.addEventListener('click',function(e){
+          ipcRenderer.send('buy_market', [selector.value,bcount.value]);
+      });
+      slimit.addEventListener('click',function(e){
+          ipcRenderer.send('sell_limit', [selector.value,scount.value,sellPrice.value]);
+      });
+      smarket.addEventListener('click',function(e){
+          ipcRenderer.send('sell_market', [selector.value,scount.value]);
+      });
+
+      // alert
+
+      ipcRenderer.on('alert', (event,data) => {
+        alert(data);
+      });
+
+      // Orderbook
+
+      ipcRenderer.on('orderbook', (event,data) => {
+        var html = "<tr id='thead'><th>Pair</th><th>Side</th><th>Quantity</th><th>Price</th><th><button id='cancelAll' style='display:none'>Cancel All</button></th></tr>";
+        for(var i = 0;i < data.length;i++){
+          html += htmlOrder(data[i].orderId,data[i].symbol,data[i].side,data[i].origQty,data[i].price);
+        }
+        document.getElementById('orderbox').innerHTML = html;
+      });
+
+      ipcRenderer.on('balancesbook', (event,data) => {
+        var html = "<tr id='bhead'><th>Coin</th><th>Available</th><th>On Order</th></tr><th><button id='closeBalances' onclick='closeBalance()'>Return</button></th>";
+        for(var coin in data){
+            html += htmlBalance(coin,data[coin].available,data[coin].onOrder);
+        }
+        document.getElementById('balancesTable').innerHTML = html;
+      });
+    </script>
+  </body>
+</html>
